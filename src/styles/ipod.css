@@ -16,9 +16,53 @@ h1 {
 .ipod {
   width: 520px;
   height: 860px;
-  background: white;
+  background: linear-gradient(160deg, #f2f1f1 0%, #e2e2e2 40%, #bebebe 100%);
   border-radius: 40px;
-  box-shadow: 0 15px 40px rgba(0,0,0,.2);
+  box-shadow:
+    /* outer drop shadow */
+    0 20px 50px rgba(0, 0, 0, 0.4),
+    /* inset top-left highlight (light hits from top) */
+    inset 2px 3px 6px #f4f4f4,
+    /* inset bottom-right shadow (depth/curvature) */
+    inset -2px -3px 8px #9b9b9b,
+    /* subtle inner rim all around */
+    inset 0 0 20px #9b9b9b;
 
   margin: 0 auto;
+  overflow: hidden;
+}
+
+.screen {
+  width: 85%;
+  height: 40%;
+  background: rgb(0, 0, 0);
+  border: 3px solid #3d3f40;
+  border-radius: 10px;
+
+  display: block;
+  margin: 36px;
+}
+
+.click-wheel {
+  width: 322px;
+  height: 322px;
+  background: #fafcfd;
+  border-radius: 50%;
+  position: relative;
+  box-shadow:  0 0 3px rgba(0, 0, 0, 0.4);
+
+  margin: 70px auto;
+}
+
+.center-button {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(180deg, #bebebe 0%, #e2e2e2 70%, #f2f1f1 100%);
+  border-radius: 50%;
+  box-shadow:  0 0 5px #cdcfce;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
