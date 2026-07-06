@@ -1,3 +1,5 @@
+import "../styles/ipod.css";
+
 function Playlist() {
     return (
         <div className="playlist">

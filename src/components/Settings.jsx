@@ -1,7 +1,8 @@
+import "../styles/ipod.css";
+
 function Settings({ darkMode, setDarkMode }) {
     return (
         <div className={darkMode ? "settings dark" : "settings"}>
-            <h2>Settings</h2>
             <ul>
                 <li>
                     <label>
