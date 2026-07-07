@@ -1,11 +1,11 @@
 import "../styles/ipod.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Library from "./Library.jsx";
 import Playlists from "./Playlist.jsx";
 import Settings from "./Settings.jsx";
 import NowPlaying from "./NowPlaying.jsx";
 
-function Screen({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu, menuItems, songs, setSongs, currentSong, setCurrentSong, selectedSong, setSelectedSong, currentTime }) {
+function Screen({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu, menuItems, songs, setSongs, currentSong, setCurrentSong, currentTime, playlists, setPlaylists, selectedItem, setSelectedItem, selectedPlaylist, setSelectedPlaylist, previousScreen, setPreviousScreen }) {
     const [darkMode, setDarkMode] = useState(false);
 
     const handleMenuClick = (item) => {
@@ -41,11 +41,11 @@ function Screen({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu
                 </ul>
                 )}
                 {currentScreen === "Library" && 
-                    <Library songs={songs} setSongs={setSongs} currentSong={currentSong} setCurrentSong={setCurrentSong} setCurrentScreen={setCurrentScreen} selectedSong={selectedSong} setSelectedSong={setSelectedSong} />
+                    <Library songs={songs} setSongs={setSongs} currentSong={currentSong} setCurrentSong={setCurrentSong} setCurrentScreen={setCurrentScreen} selectedItem={selectedItem} setSelectedItem={setSelectedItem} setPreviousScreen={setPreviousScreen} currentScreen={currentScreen} />
                 }
 
                 {currentScreen === "Playlists" && 
-                    <Playlists />
+                    <Playlists playlists={playlists} setPlaylists={setPlaylists} songs={songs} setSongs={setSongs} setCurrentSong={setCurrentSong} setCurrentScreen={setCurrentScreen} selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedPlaylist={selectedPlaylist} setSelectedPlaylist={setSelectedPlaylist} setPreviousScreen={setPreviousScreen} currentScreen={currentScreen} />
                 }
 
                 {currentScreen === "Now Playing" && 

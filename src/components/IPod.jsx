@@ -14,13 +14,17 @@ function IPod() {
 
     const [currentSong, setCurrentSong] = useState(null);
 
-    const [ selectedSong, setSelectedSong] = useState(null);
+    const [selectedItem, setSelectedItem] = useState("Add Song");
 
     const [ isPlaying, setIsPlaying] = useState(false);
 
     const audioRef = useRef(null);
 
     const [ currentTime, setCurrentTime] = useState(0);
+
+    const [ playlists, setPlaylists] = useState([]);
+
+    const [ selectedPlaylist, setSelectedPlaylist ] = useState(null);
 
     const handleTimeUpdate = () => {
         setCurrentTime(audioRef.current.currentTime);
@@ -40,14 +44,42 @@ function IPod() {
         setCurrentTime(0);
     }, [currentSong]);
 
+    const skipSong = (direction, wrap = true) => {
+        if (!currentSong || songs.length === 0) return;
+
+        const currentIndex = songs.indexOf(currentSong);
+        let newIndex = currentIndex + direction;
+
+        if (newIndex < 0) newIndex = wrap ? songs.length - 1 : 0;
+        if (newIndex >= songs.length) {
+            if (wrap) newIndex = 0;
+            else {
+                setIsPlaying(false);
+                return;
+            }
+        }
+
+        setCurrentSong(songs[newIndex]);
+        setSelectedItem(songs[newIndex]);
+        setIsPlaying(true); // Automatically play the new song
+    };
+
+    const [previousScreen, setPreviousScreen] = useState("Menu");
+    /*const prevScreenRef = useRef("Menu");
+
+    useEffect(() => {
+        setPreviousScreen(prevScreenRef.current); // save old
+        prevScreenRef.current = currentScreen; // update to new
+    }, [currentScreen]);*/
+
     return (
         <div className="ipod-container">
             <h1>PlayBack</h1>
             <div className="ipod">
-                <Screen currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} menuItems={menuItems} songs={songs} setSongs={setSongs} currentSong={currentSong} setCurrentSong={setCurrentSong} selectedSong={selectedSong} setSelectedSong={setSelectedSong} currentTime={currentTime} />
-                <ClickWheel currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} menuItems={menuItems} selectedSong={selectedSong} setSelectedSong={setSelectedSong} songs={songs} currentSong={currentSong} setCurrentSong={setCurrentSong} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
+                <Screen currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} menuItems={menuItems} songs={songs} setSongs={setSongs} currentSong={currentSong} setCurrentSong={setCurrentSong} currentTime={currentTime} playlists={playlists} setPlaylists={setPlaylists} selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedPlaylist={selectedPlaylist} setSelectedPlaylist={setSelectedPlaylist} previousScreen={previousScreen} setPreviousScreen={setPreviousScreen} />
+                <ClickWheel currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} menuItems={menuItems} songs={songs} currentSong={currentSong} setCurrentSong={setCurrentSong} isPlaying={isPlaying} setIsPlaying={setIsPlaying} skipSong={skipSong} selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedPlaylist={selectedPlaylist} setSelectedPlaylist={setSelectedPlaylist} playlists={playlists} previousScreen={previousScreen} setPreviousScreen={setPreviousScreen} />
 
-                <audio ref={audioRef} src={currentSong?.fileUrl} onTimeUpdate={handleTimeUpdate} />
+                <audio ref={audioRef} src={currentSong?.fileUrl} onTimeUpdate={handleTimeUpdate} onEnded={() => skipSong(1, false)} />
             </div>
         </div>
     );

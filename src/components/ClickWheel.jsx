@@ -7,7 +7,7 @@ import { FiMenu } from 'react-icons/fi';
 import { FaFastForward } from 'react-icons/fa';
 import { FaFastBackward } from 'react-icons/fa';
 
-function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu, menuItems, selectedSong, setSelectedSong, songs, currentSong, setCurrentSong, isPlaying, setIsPlaying }) {
+function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu, menuItems, songs, currentSong, setCurrentSong, isPlaying, setIsPlaying, skipSong, selectedItem, setSelectedItem, selectedPlaylist, setSelectedPlaylist, playlists, previousScreen, setPreviousScreen }) {
     // useRef doesnt rerender and gives final values - better than useState that rerenders
     const wheelRef = useRef(null);
     const isDragging = useRef(false);
@@ -68,13 +68,35 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
             setSelectedMenu(menuItems[newIndex]);
         }
         if (currentScreen === "Library") {
-            const currentIndex = songs.indexOf(selectedSong);
+            const libraryItems = ["Add Song", ...songs];
+            const currentIndex = libraryItems.indexOf(selectedItem);
             let newIndex = currentIndex + direction;
 
-            if (newIndex < 0) newIndex = songs.length - 1;
-            if (newIndex >= songs.length) newIndex = 0;
+            if (newIndex < 0) newIndex = libraryItems.length - 1;
+            if (newIndex >= libraryItems.length) newIndex = 0;
 
-            setSelectedSong(songs[newIndex]);
+            setSelectedItem(libraryItems[newIndex]);
+        }
+        if (currentScreen === "Playlists") {
+            if (selectedPlaylist === null) {
+                const playlistItems = ["Add Playlist", ...playlists];
+                const currentIndex = playlistItems.indexOf(selectedItem);
+                let newIndex = currentIndex + direction;
+
+                if (newIndex < 0) newIndex = playlistItems.length - 1;
+                if (newIndex >= playlistItems.length) newIndex = 0;
+
+                setSelectedItem(playlistItems[newIndex]);
+            } else {
+                const playlistSongs = songs.filter((song) => selectedPlaylist.songIds.includes(song.id));
+                const currentIndex = playlistSongs.indexOf(selectedItem);
+                let newIndex = currentIndex + direction;
+
+                if (newIndex < 0) newIndex = playlistSongs.length - 1;
+                if (newIndex >= playlistSongs.length) newIndex = 0;
+
+                setSelectedItem(playlistSongs[newIndex]);
+            }
         }
     };
 
@@ -82,9 +104,27 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
         if (currentScreen === "Menu") {
             setCurrentScreen(selectedMenu);
         }
-        if (currentScreen === "Library" && selectedSong) {
-            setCurrentScreen("Now Playing");
-            setCurrentSong(selectedSong);
+        if (currentScreen === "Library" && selectedItem) {
+            if (typeof selectedItem === "string") {
+                document.querySelector('.song-input').click();
+            } else {
+                setPreviousScreen(currentScreen);
+                setCurrentScreen("Now Playing");
+                setCurrentSong(selectedItem);
+            }
+        }
+        if (currentScreen === "Playlists" && selectedItem) {
+            if (selectedPlaylist === null) {
+                if (typeof selectedItem === "string") {
+                    document.querySelector('.playlist-input').click();
+                } else {
+                    setSelectedPlaylist(selectedItem);
+                }
+            } else {
+                setPreviousScreen(currentScreen);
+                setCurrentScreen("Now Playing");
+                setCurrentSong(selectedItem);
+            }
         }
     };
 
@@ -94,18 +134,18 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
         }
     };
 
-    const skipSong = (direction) => {
-        if (!currentSong || songs.length === 0) return;
-        
-        const currentIndex = songs.indexOf(currentSong);
-        let newIndex = currentIndex + direction;
-
-        if (newIndex < 0) newIndex = songs.length - 1;
-        if (newIndex >= songs.length) newIndex = 0;
-
-        setCurrentSong(songs[newIndex]);
-        setSelectedSong(songs[newIndex]);
-        setIsPlaying(true); // Automatically play the new song
+    const handleBackClick = () => {
+        if (currentScreen === "Menu") {
+            return;
+        } else if (currentScreen === "Playlists" && selectedPlaylist !== null) {
+            setSelectedPlaylist(null);
+            return;
+        } else if (currentScreen === "Now Playing") {
+            setCurrentScreen(previousScreen);
+            return;
+        } else {
+            setCurrentScreen("Menu");
+        }
     };
 
     return (
@@ -122,7 +162,7 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
             <div className="glow-bottom"></div>
             <div className="glow-left"></div>
 
-            <button onClick={() => setCurrentScreen("Menu")} className="menu-button button">
+            <button onClick={handleBackClick} className="menu-button button">
                 <FiMenu size={24} />
             </button>
 

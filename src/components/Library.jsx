@@ -1,67 +1,33 @@
 import "../styles/ipod.css";
+import { extractSongData } from "../utils/extractSongsData";
+import SongList from "./SongList.jsx";
 
 import { useState } from 'react';
-import jsmediatags from 'jsmediatags';
 
-function Library({ songs, setSongs, currentSong, setCurrentSong, setCurrentScreen, selectedSong, setSelectedSong }) {
-    const handleSongUpload = (e) => {
+function Library({ songs, setSongs, currentSong, setCurrentSong, setCurrentScreen, selectedItem, setSelectedItem, setPreviousScreen, currentScreen }) {
+    const handleSongUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        jsmediatags.read(file, {
-            onSuccess: (tag) => {
-                const { title, artist, picture, album } = tag.tags;
-                
-                let albumArt = null;
-                if (picture) {
-                    const base64String = picture.data
-                    .map((byte) => String.fromCharCode(byte))
-                    .join("");
-                    albumArt = `data:${picture.format};base64,${btoa(base64String)}`;
-                }
-
-                const audio = new Audio(URL.createObjectURL(file));
-                // Wait for the audio metadata to load to get the duration
-                audio.addEventListener('loadedmetadata', () => {
-                    const newSong = {
-                        title: title || file.name,
-                        artist: artist || "Unknown Artist",
-                        duration: audio.duration,
-                        album: album || "Unknown Album",
-                        albumArt,
-                        fileUrl: URL.createObjectURL(file),
-                    };
-                    // creates fresh array reference which react can detect and rerender
-                    setSongs([...songs, newSong]);
-                });
-            },
-            onError: (error) => {
-                console.error('Error reading tags:', error);
-            }
-        });
+        const newSong = await extractSongData(file);
+        setSongs([...songs, newSong]);
     };
 
     return (
         <div className="library">
-            <button className="add-song-button">Add Song</button>
+            <button className={selectedItem === "Add Song" ? "add-song-button active" : "add-song-button"} onClick={() => document.querySelector('.song-input').click()}>
+                Add Song
+            </button>
             <input type="file" accept="audio/*" className="song-input" onChange={handleSongUpload} />
-            <ul className="song-list">
-                {songs.map((song, index) => (
-                    <li 
-                        key={index}
-                        className={selectedSong === song ? "song-item active" : "song-item"}
-                        onClick={() => {
-                            setCurrentSong(song);
-                            setCurrentScreen("Now Playing");
-                            //const audio = new Audio(song.fileUrl);
-                            //audio.play();
-                        }}
-                    >
-                        {song.albumArt && <img src={song.albumArt} alt="Album Art" className="album-art" />}
-                        {song.title} - {song.artist}  {song.duration && <span className="song-duration">{Math.floor(song.duration / 60)}:{String(Math.floor(song.duration % 60)).padStart(2, '0')}</span>}
-                    </li>
-                ))}
-            </ul>
+            <SongList 
+                songs={songs} 
+                setCurrentSong={setCurrentSong} 
+                setCurrentScreen={setCurrentScreen} 
+                selectedItem={selectedItem} 
+                setSelectedItem={setSelectedItem}
+                setPreviousScreen={setPreviousScreen}
+                currentScreen={currentScreen}
+            />
         </div>
     );
 }

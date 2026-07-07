@@ -44,6 +44,8 @@ h1 {
 
   display: block;
   margin: 36px;
+
+  overflow: hidden;
 }
 
 .screen h3 {
@@ -51,6 +53,8 @@ h1 {
   margin: 0;
   padding: 5px;
   background: linear-gradient(to bottom, #f9f9f9 0%, #babec1 80%, #a1a7a7 100%);
+  position: sticky;
+  top: 0;
 }
 
 .menu-items {
@@ -74,7 +78,9 @@ h1 {
 .options {
     width: 50%;
     background: #f5f5f5;
-    min-height: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .screen.dark {
@@ -432,4 +438,57 @@ button {
   width: 30px;
   height: 30px;
   margin-right: 10px;
+}
+
+.song-input {
+    display: none;
+}
+
+/*------------------------------------------------- PLAYLIST.JSX -------------------------------------------------*/
+.playlist-input {
+    display: none;
+}
+
+.add-playlist-button {
+  background-color: #cdcdcd;
+  color: white;
+  width: 100%;
+  padding: 5px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.add-playlist-button:hover {
+  background-color: #e7b4d3;
+}
+
+.playlist-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+
+.playlist-item {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  list-style: none;
+  max-height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+
+.playlist-item.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.playlist-item .arrow {
+  margin-left: auto;
 }
