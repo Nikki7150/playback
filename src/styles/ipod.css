@@ -1,3 +1,12 @@
+/*------------------------------------------------- ROOT -------------------------------------------------*/
+:root {
+  --ipod-color: #e2e2e2;
+  --font-color: #333;
+  --accent-color: #4d9bd7;
+  --ipod-background: url("../assets/wallpapers/flower\ wallpaper.jpeg");
+  --font-family: "Unica One", sans-serif;
+}
+
 /*------------------------------------------------- IPOD.JSX -------------------------------------------------*/
 .ipod-container {
   width: 100%;
@@ -5,11 +14,12 @@
   display: block;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 h1 {
   font-size: 2rem;
-  color: #333;
+  color: var(--font-color);
   text-align: center;
   margin-bottom: 20px;
 }
@@ -17,17 +27,17 @@ h1 {
 .ipod {
   width: 520px;
   height: 860px;
-  background: linear-gradient(160deg, #f2f1f1 0%, #e2e2e2 40%, #bebebe 100%);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--ipod-color) 80%, white) 0%, var(--ipod-color) 40%, color-mix(in srgb, var(--ipod-color) 75%, black) 100%);
   border-radius: 40px;
   box-shadow:
     /* outer drop shadow */
     0 20px 50px rgba(0, 0, 0, 0.4),
     /* inset top-left highlight (light hits from top) */
-    inset 2px 3px 6px #f4f4f4,
+    inset 2px 3px 6px color-mix(in srgb, var(--ipod-color) 65%, white),
     /* inset bottom-right shadow (depth/curvature) */
-    inset -2px -3px 8px #9b9b9b,
+    inset -2px -3px 8px color-mix(in srgb, var(--ipod-color) 65%, black),
     /* subtle inner rim all around */
-    inset 0 0 20px #9b9b9b;
+    inset 0 0 20px color-mix(in srgb, var(--ipod-color) 65%, black);
 
   margin: 0 auto;
   overflow: hidden;
@@ -37,15 +47,21 @@ h1 {
 .screen {
   width: 85%;
   height: 40%;
-  background: #facbe6;
+  background-image: var(--ipod-background);
+  background-position: right;
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
   border: 3px solid #3d3f40;
-  color: #000000;
+  color: var(--font-color);
   border-radius: 10px;
 
   display: block;
   margin: 36px;
 
   overflow: hidden;
+
+  font-family: var(--font-family) !important;
+  line-height: 1.2;
 }
 
 .screen h3 {
@@ -55,6 +71,7 @@ h1 {
   background: linear-gradient(to bottom, #f9f9f9 0%, #babec1 80%, #a1a7a7 100%);
   position: sticky;
   top: 0;
+  letter-spacing: 1px;
 }
 
 .menu-items {
@@ -67,11 +84,12 @@ h1 {
     padding: 5px;
     font-size: 1.1rem;
     font-weight: bold;
+    letter-spacing: 1px;
     cursor: pointer;
 }
 
 .active {
-    background: linear-gradient(to bottom, #4d9bd7 0%, #2d72bc 100%);
+    background: linear-gradient(to bottom, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 80%, black) 100%);
     cursor: pointer;
 }
 
@@ -104,15 +122,6 @@ h1 {
 }
 
 /*------------------------------------------------- CLICKWHEEL.JSX -------------------------------------------------*/
-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: .5rem;
-  color: #a4a4a4;
-  padding: 0;
-}
-
 .glow-top,
 .glow-right,
 .glow-bottom,
@@ -300,7 +309,7 @@ button {
 .center-button {
   width: 120px;
   height: 120px;
-  background: linear-gradient(180deg, #bebebe 0%, #e2e2e2 70%, #f2f1f1 100%);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--ipod-color) 75%, black) 0%, var(--ipod-color) 70%, color-mix(in srgb, var(--ipod-color) 75%, white) 100%);
   border-radius: 50%;
   box-shadow:  0 0 5px #cdcfce;
 
@@ -311,7 +320,7 @@ button {
 }
 
 .center-button:active {
-  background: linear-gradient(180deg, rgb(137, 136, 136) 0%, #bebebe 70%, #e2e2e2 100%);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--ipod-color) 55%, black) 0%, color-mix(in srgb, var(--ipod-color) 85%, black) 70%, var(--ipod-color) 100%);
   box-shadow:  inset 0 0 5px #898a8a;
 }
 
@@ -329,7 +338,8 @@ button {
 .track-number {
   font-size: 20px;
   font-weight: bold;
-  color: #444343;
+  letter-spacing: 1px;
+  color: var(--font-color);
   margin-bottom: 10px;
 }
 
@@ -360,6 +370,7 @@ button {
 .song-info h4 {
   margin: 10px;
   font-size: 18px;
+  letter-spacing: 1px;
 }
 
 .song-info p {
@@ -393,7 +404,7 @@ button {
 .current-time,
 .total-time {
   font-size: 16px;
-  color: #444343;
+  color: var(--font-color);
 }
 
 /*------------------------------------------------- LIBRARY.JSX -------------------------------------------------*/
@@ -405,10 +416,6 @@ button {
   border: none;
   font-size: 16px;
   cursor: pointer;
-}
-
-.add-song-button:hover {
-  background-color: #e7b4d3;
 }
 
 .song-list {
@@ -430,7 +437,7 @@ button {
 }
 
 .song-item.active {
-  background-color: #007bff;
+  background-color: linear-gradient(to bottom, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 80%, black) 100%);
   color: white;
 }
 
@@ -459,10 +466,6 @@ button {
   cursor: pointer;
 }
 
-.add-playlist-button:hover {
-  background-color: #e7b4d3;
-}
-
 .playlist-list {
   list-style: none;
   padding: 0;
@@ -485,10 +488,149 @@ button {
 }
 
 .playlist-item.active {
-  background-color: #007bff;
+  background-color: linear-gradient(to bottom, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 80%, black) 100%);
   color: white;
 }
 
 .playlist-item .arrow {
   margin-left: auto;
+}
+
+.playlist-list.dark {
+  background-color: #696969;
+  color: white;
+}
+
+.playlist-list.dark .playlist-item {
+  background-color: #696969;
+  color: white;
+}
+
+/*------------------------------------------------- SETTINGS.JSX -------------------------------------------------*/
+.settings-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+
+.settings-list li, .settings-list button, .settings-list .dark-mode-button, .user-name {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  list-style: none;
+  max-height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+  color: var(--font-color);
+  margin: 0;
+  font-weight: normal;
+}
+
+.settings-list li.active {
+  background-color: linear-gradient(to bottom, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 80%, black) 100%);
+  color: white;
+}
+
+.settings-list button.active {
+  background-color: linear-gradient(to bottom, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 80%, black) 100%);
+  color: white;
+}
+
+.settings-list .user-name.active {
+  color: white;
+}
+
+.dark-mode-button span {
+  margin-left: auto;
+}
+
+.shuffle-icon {
+  margin-left: 60%;
+}
+
+.settings-list.dark li, .settings-list.dark button, .settings-list.dark .dark-mode-button, .settings-list.dark .user-name {
+  background-color: #696969;
+  color: white;
+}
+
+/*------------------------------------------------- CUSTOMIZATION.JSX -------------------------------------------------*/
+.customization-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+
+.customization-list li {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  list-style: none;
+  height: 60px;
+  display: flex;
+  padding: 5px;
+  padding-right: 0;
+  align-items: center;
+  width: 100%;
+  color: var(--font-color);
+  margin: 0;
+  font-weight: normal;
+}
+
+.color::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.color::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+}
+
+.color {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid black;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.customization-list li input[type="color"] {
+    margin-right: 10%;
+}
+
+.customization-list li.active {
+  background-color: linear-gradient(to bottom, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 80%, black) 100%);
+  color: white;
+}
+
+.customization-list.dark li, .customization-list.dark button, .customization-list.dark .dark-mode-button, .customization-list.dark .user-name {
+  background-color: #696969;
+  color: white;
+}
+
+/*----------------------------------------------- COMMON ELEMENTS -------------------------------------------------*/
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #a4a4a4;
+  padding: 0;
+  font-family: var(--font-family);
+}
+
+.song-list.dark .song-item {
+  background-color: #696969;
+  color: white;
 }

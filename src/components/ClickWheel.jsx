@@ -7,7 +7,7 @@ import { FiMenu } from 'react-icons/fi';
 import { FaFastForward } from 'react-icons/fa';
 import { FaFastBackward } from 'react-icons/fa';
 
-function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu, menuItems, songs, currentSong, setCurrentSong, isPlaying, setIsPlaying, skipSong, selectedItem, setSelectedItem, selectedPlaylist, setSelectedPlaylist, playlists, previousScreen, setPreviousScreen }) {
+function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu, menuItems, songs, currentSong, setCurrentSong, isPlaying, setIsPlaying, skipSong, selectedItem, setSelectedItem, selectedPlaylist, setSelectedPlaylist, playlists, previousScreen, setPreviousScreen, user, shuffle, setShuffle, handleResetCustomization, fontOptions, customization, setCustomization }) {
     // useRef doesnt rerender and gives final values - better than useState that rerenders
     const wheelRef = useRef(null);
     const isDragging = useRef(false);
@@ -98,6 +98,40 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
                 setSelectedItem(playlistSongs[newIndex]);
             }
         }
+        if (currentScreen === "Settings") {
+            if (user) {
+                const settingsItems = ["Dark Mode", "Shuffle", "Ipod Customization", "Reset Settings", "User Name", "Logout"];
+
+                const currentIndex = settingsItems.indexOf(selectedItem);
+                let newIndex = currentIndex + direction;
+
+                if (newIndex < 0) newIndex = settingsItems.length - 1;
+                if (newIndex >= settingsItems.length) newIndex = 0;
+
+                setSelectedItem(settingsItems[newIndex]);
+            } else {
+                const settingsItems = ["Dark Mode", "Shuffle", "Ipod Customization", "Reset Settings", "Login with Google"];
+
+                const currentIndex = settingsItems.indexOf(selectedItem);
+                let newIndex = currentIndex + direction;
+
+                if (newIndex < 0) newIndex = settingsItems.length - 1;
+                if (newIndex >= settingsItems.length) newIndex = 0;
+
+                setSelectedItem(settingsItems[newIndex]);
+            }
+        }
+        if (currentScreen === "Customization") {
+            const customizationItems = ["App Theme", "iPod Background", "Font Type", "Font Color", "Accent Color", "Ipod Color"];
+
+            const currentIndex = customizationItems.indexOf(selectedItem);
+            let newIndex = currentIndex + direction;
+
+            if (newIndex < 0) newIndex = customizationItems.length - 1;
+            if (newIndex >= customizationItems.length) newIndex = 0;
+
+            setSelectedItem(customizationItems[newIndex]);
+        }
     };
 
     const handleCenterClick = () => {
@@ -126,6 +160,53 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
                 setCurrentSong(selectedItem);
             }
         }
+        if (currentScreen === "Settings" && selectedItem) {
+            if (selectedItem === "Dark Mode") {
+                document.querySelector('.dark-mode-button')?.click();
+            }
+            if (selectedItem === "Shuffle") {
+                document.querySelector('.shuffle')?.click();
+            }
+            if (selectedItem === "Ipod Customization") {
+                setPreviousScreen("Settings");
+                setCurrentScreen("Customization");
+            }
+            if (selectedItem === "Reset Settings") {
+                document.querySelector('.reset-settings')?.click();
+            }
+            if (selectedItem === "Logout") {
+                document.querySelector('.logout')?.click();
+            }
+            if (selectedItem === "Login with Google") {
+                document.querySelector('.login-google')?.click();
+            }
+        }
+        if (currentScreen === "Customization") {
+            if (selectedItem === "App Theme") {
+                document.querySelector('.appTheme')?.click();
+            }
+            if (selectedItem === "iPod Background") {
+                document.querySelector('.background-input')?.click();
+            }
+            if (selectedItem === "Font Type") {
+                const currentIndex = fontOptions.indexOf(customization.fontFamily);
+                let newIndex = currentIndex + 1;
+
+                if (newIndex < 0) newIndex = fontOptions.length - 1;
+                if (newIndex >= fontOptions.length) newIndex = 0;
+
+                setCustomization({...customization, fontFamily: fontOptions[newIndex]})
+            }
+            if (selectedItem === "Font Color") {
+                document.querySelector('.fontColor')?.click();
+            }
+            if (selectedItem === "Accent Color") {
+                document.querySelector('.accentColor')?.click();
+            }
+            if (selectedItem === "Ipod Color") {
+                document.querySelector('.ipodColor')?.click();
+            }
+        }
     };
 
     const handlePlayPause = () => {
@@ -141,6 +222,9 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
             setSelectedPlaylist(null);
             return;
         } else if (currentScreen === "Now Playing") {
+            setCurrentScreen(previousScreen);
+            return;
+        } else if (currentScreen === "Customization") {
             setCurrentScreen(previousScreen);
             return;
         } else {

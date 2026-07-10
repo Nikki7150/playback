@@ -4,7 +4,7 @@ import { extractSongData } from "../utils/extractSongsData.jsx";
 import { useState } from "react";
 import SongList from "./SongList.jsx";
 
-function Playlist({ playlists, setPlaylists, songs, setSongs, setCurrentSong, setCurrentScreen, selectedItem, setSelectedItem, selectedPlaylist, setSelectedPlaylist, setPreviousScreen, currentScreen }) {
+function Playlist({ playlists, setPlaylists, songs, setSongs, setCurrentSong, setCurrentScreen, selectedItem, setSelectedItem, selectedPlaylist, setSelectedPlaylist, setPreviousScreen, currentScreen, user, darkMode }) {
     const handlePlaylistUpload = async (e) => {
         const files = Array.from(e.target.files); // Convert FileList to an array
         if (files.length === 0) return;
@@ -23,6 +23,7 @@ function Playlist({ playlists, setPlaylists, songs, setSongs, setCurrentSong, se
         const newPlaylist = {
             name: folderName,
             songIds: songIds,
+            id: crypto.randomUUID(),
         };
 
         setSongs([...songs, ...newSongs]);
@@ -30,17 +31,17 @@ function Playlist({ playlists, setPlaylists, songs, setSongs, setCurrentSong, se
     };
 
     return (
-        <div className="playlist">
+        <div className={darkMode ? "playlist dark" : "playlist"}>
             {selectedPlaylist === null && (
                 <><button className={selectedItem === "Add Playlist" ? "add-playlist-button active" : "add-playlist-button"} onClick={() => document.querySelector('.playlist-input').click()}>
                     Add Playlist
                 </button>
                 <input type="file" webkitdirectory="" className="playlist-input" onChange={handlePlaylistUpload}/>
-                <ul className="playlist-list">
-                        {playlists.map((playlist, index) => (
+                <ul className={darkMode ? "playlist-list dark" : "playlist-list"}>
+                        {playlists.map((playlist) => (
                             <li
                                 className={selectedItem === playlist ? "playlist-item active" : "playlist-item"}
-                                key={index}
+                                key={playlist.id}
                                 onClick={() => setSelectedPlaylist(playlist)}
                             >
                                 {playlist.name} <span className="arrow"><FaAngleRight /></span>
@@ -58,6 +59,8 @@ function Playlist({ playlists, setPlaylists, songs, setSongs, setCurrentSong, se
                     setSelectedItem={setSelectedItem}
                     setPreviousScreen={setPreviousScreen}
                     currentScreen={currentScreen}
+                    darkMode={darkMode}
+                    user={user}
                 />
             )}
         </div>

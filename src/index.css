@@ -1,3 +1,7 @@
+:root {
+  --app-theme-color: #f8dce8;
+}
+
 html, body {
   height: 100%;
   overflow: hidden;
@@ -5,7 +9,6 @@ html, body {
 
 body {
   margin: 0;
-  background: #f8dce8;
   font-family: sans-serif;
 }
 
@@ -14,4 +17,5 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background: var(--app-theme-color);
 }

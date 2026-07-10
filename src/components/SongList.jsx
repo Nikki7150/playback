@@ -1,7 +1,7 @@
 import "../styles/ipod.css";
 import { useState, useRef, useEffect } from "react";
 
-function SongList({ songs, setCurrentSong, setCurrentScreen, selectedItem, setSelectedItem, setPreviousScreen, currentScreen }) {
+function SongList({ songs, setCurrentSong, setCurrentScreen, selectedItem, setSelectedItem, setPreviousScreen, currentScreen, darkMode, user }) {
     const itemRefs = useRef([]);
 
     useEffect(() => {
@@ -10,7 +10,7 @@ function SongList({ songs, setCurrentSong, setCurrentScreen, selectedItem, setSe
     }, [selectedItem]);
 
     return (
-        <ul className="song-list">
+        <ul className={darkMode ? "song-list dark" : "song-list"}>
             {songs.map((song, index) => (
                 <li 
                     key={song.id}

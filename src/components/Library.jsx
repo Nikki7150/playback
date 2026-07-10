@@ -4,7 +4,7 @@ import SongList from "./SongList.jsx";
 
 import { useState } from 'react';
 
-function Library({ songs, setSongs, currentSong, setCurrentSong, setCurrentScreen, selectedItem, setSelectedItem, setPreviousScreen, currentScreen }) {
+function Library({ songs, setSongs, currentSong, setCurrentSong, setCurrentScreen, selectedItem, setSelectedItem, setPreviousScreen, currentScreen, darkMode, user }) {
     const handleSongUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -27,6 +27,8 @@ function Library({ songs, setSongs, currentSong, setCurrentSong, setCurrentScree
                 setSelectedItem={setSelectedItem}
                 setPreviousScreen={setPreviousScreen}
                 currentScreen={currentScreen}
+                darkMode={darkMode}
+                user={user}
             />
         </div>
     );
