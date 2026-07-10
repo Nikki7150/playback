@@ -1,28 +1,39 @@
 import "../styles/ipod.css";
+import { useState, useEffect, useRef } from "react";
 
 import { FaToggleOff, FaToggleOn, FaRandom } from 'react-icons/fa';
+import { supabase } from "../utils/supabaseClient.js";
 
-function Customization({ darkMode, setDarkMode, user, selectedItem, customization, setCustomization, fontOptions }) {
-    const handleBackgroundUpload = (e) => {
+function Customization({ darkMode, setDarkMode, user, selectedItem, customization, setCustomization, fontOptions, customizationItems }) {
+    const handleBackgroundUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        const imageUrl = URL.createObjectURL(file);
-        setCustomization({...customization, ipodBackground: imageUrl});
+        const { data, error } = await supabase.storage
+            .from("user-images")
+            .upload(`${user.id}/wallpaper.jpg`, file, { upsert: true });
+        if (error) { 
+            console.error("Error uploading background:", error); 
+            return; 
+        }
+        const { data: urlData } = supabase.storage
+            .from("user-images")
+            .getPublicUrl(`${user.id}/wallpaper.jpg`);
+        const publicUrl = urlData.publicUrl;
+        setCustomization({...customization, ipodBackground: publicUrl});
     };
 
-    const handleStickerUpload = (position, file) => {
-        const imageUrl = URL.createObjectURL(file);
-        const updatedStickers = customization.stickers.map(sticker =>
-            sticker.position === position ? { ...sticker, image: imageUrl } : sticker
-        );
-        setCustomization({ ...customization, stickers: updatedStickers });
-    };
+    const itemRefs = useRef([]);
+    
+    useEffect(() => {
+        const index = customizationItems.indexOf(selectedItem);
+        itemRefs.current[index]?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, [selectedItem]);
 
     return (
         <div className={darkMode ? "customization dark" : "customization"}>
             <ul className={darkMode ? "customization-list dark" : "customization-list"}>
                 {/*app theme*/}
-                <li className={selectedItem === "App Theme" ? "app-theme active" : "app-theme"} onClick={() => document.querySelector('.appTheme').click()}>
+                <li ref={(el) => (itemRefs.current[0] = el)} className={selectedItem === "App Theme" ? "app-theme active" : "app-theme"} onClick={() => document.querySelector('.appTheme').click()}>
                     App Theme 
                     <input 
                         type="color" 
@@ -32,7 +43,7 @@ function Customization({ darkMode, setDarkMode, user, selectedItem, customizatio
                     />
                 </li>
                 {/*ipod screen background*/}
-                <li className={selectedItem === "iPod Background" ? "ipod-background active" : "ipod-background"} onClick={() => document.querySelector('.background-input').click()}>
+                <li ref={(el) => (itemRefs.current[1] = el)} className={selectedItem === "iPod Background" ? "ipod-background active" : "ipod-background"} onClick={() => document.querySelector('.background-input').click()}>
                     iPod Background
                     <input 
                         type="file" 
@@ -42,7 +53,7 @@ function Customization({ darkMode, setDarkMode, user, selectedItem, customizatio
                     />
                 </li>
                 {/*font type*/}
-                <li className={selectedItem === "Font Type" ? "font-type active" : "font-type"} 
+                <li ref={(el) => (itemRefs.current[2] = el)} className={selectedItem === "Font Type" ? "font-type active" : "font-type"} 
                     onClick={() => {
                         const currentIndex = fontOptions.indexOf(customization.fontFamily);
                         let newIndex = currentIndex + 1;
@@ -54,7 +65,7 @@ function Customization({ darkMode, setDarkMode, user, selectedItem, customizatio
                     <span className="font-type-display"> {customization.fontFamily}</span>
                 </li>
                 {/*font color*/}
-                <li className={selectedItem === "Font Color" ? "font-color active" : "font-color"} onClick={() => document.querySelector('.fontColor').click()}>
+                <li ref={(el) => (itemRefs.current[3] = el)} className={selectedItem === "Font Color" ? "font-color active" : "font-color"} onClick={() => document.querySelector('.fontColor').click()}>
                     Font Color 
                     <input 
                         type="color" 
@@ -64,7 +75,7 @@ function Customization({ darkMode, setDarkMode, user, selectedItem, customizatio
                     />
                 </li>
                 {/*accent color*/}
-                <li className={selectedItem === "Accent Color" ? "accent-color active" : "accent-color"} onClick={() => document.querySelector('.accentColor').click()}>
+                <li ref={(el) => (itemRefs.current[4] = el)} className={selectedItem === "Accent Color" ? "accent-color active" : "accent-color"} onClick={() => document.querySelector('.accentColor').click()}>
                     Accent Color 
                     <input 
                         type="color" 
@@ -74,7 +85,7 @@ function Customization({ darkMode, setDarkMode, user, selectedItem, customizatio
                     />
                 </li>
                 {/*ipod color*/}
-                <li className={selectedItem === "Ipod Color" ? "ipod-color active" : "ipod-color"} onClick={() => document.querySelector('.ipodColor').click()}>
+                <li ref={(el) => (itemRefs.current[5] = el)} className={selectedItem === "Ipod Color" ? "ipod-color active" : "ipod-color"} onClick={() => document.querySelector('.ipodColor').click()}>
                     Ipod Color 
                     <input 
                         type="color" 

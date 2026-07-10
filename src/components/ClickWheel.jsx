@@ -7,7 +7,7 @@ import { FiMenu } from 'react-icons/fi';
 import { FaFastForward } from 'react-icons/fa';
 import { FaFastBackward } from 'react-icons/fa';
 
-function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu, menuItems, songs, currentSong, setCurrentSong, isPlaying, setIsPlaying, skipSong, selectedItem, setSelectedItem, selectedPlaylist, setSelectedPlaylist, playlists, previousScreen, setPreviousScreen, user, shuffle, setShuffle, handleResetCustomization, fontOptions, customization, setCustomization }) {
+function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu, menuItems, songs, currentSong, setCurrentSong, isPlaying, setIsPlaying, skipSong, selectedItem, setSelectedItem, selectedPlaylist, setSelectedPlaylist, playlists, previousScreen, setPreviousScreen, user, shuffle, setShuffle, handleResetCustomization, fontOptions, customization, setCustomization, customizationItems }) {
     // useRef doesnt rerender and gives final values - better than useState that rerenders
     const wheelRef = useRef(null);
     const isDragging = useRef(false);
@@ -122,8 +122,6 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
             }
         }
         if (currentScreen === "Customization") {
-            const customizationItems = ["App Theme", "iPod Background", "Font Type", "Font Color", "Accent Color", "Ipod Color"];
-
             const currentIndex = customizationItems.indexOf(selectedItem);
             let newIndex = currentIndex + direction;
 

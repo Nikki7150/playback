@@ -7,7 +7,7 @@ import flowerWallpaper from "../assets/wallpapers/flower wallpaper.jpeg";
 import { supabase } from "../utils/supabaseClient.js";
 import { handleGoogleLogin, handleLogout } from "./Login.jsx";
 
-function IPod({ customization, setCustomization, handleResetCustomization }) {
+function IPod({ customization, setCustomization, handleResetCustomization, shuffle, setShuffle, darkMode, setDarkMode, user, setUser }) {
     const [currentScreen, setCurrentScreen] = useState("Menu");
 
     const menuItems = ["Library", "Playlists", "Now Playing", "Settings"];
@@ -30,7 +30,7 @@ function IPod({ customization, setCustomization, handleResetCustomization }) {
 
     const [ selectedPlaylist, setSelectedPlaylist ] = useState(null);
 
-    const [darkMode, setDarkMode] = useState(false);
+    const customizationItems = ["App Theme", "iPod Background", "Font Type", "Font Color", "Accent Color", "Ipod Color"];
 
     const handleTimeUpdate = () => {
         setCurrentTime(audioRef.current.currentTime);
@@ -62,53 +62,7 @@ function IPod({ customization, setCustomization, handleResetCustomization }) {
 
     const [previousScreen, setPreviousScreen] = useState("Menu");
 
-    const [user, setUser] = useState(null);
-
-    const [shuffle, setShuffle] = useState(false);
-
     const fontOptions = ["Unica One", "Indie Flower", "Handjet", "Sue Ellen Fransico", "Oxanium"];
-
-    const fetchOrCreateProfile = async (userId) => {
-        const { error: upsertError } = await supabase
-            .from("profiles")
-            .upsert(
-                {
-                    id: userId,
-                    app_theme_color: "#facbe6",
-                    ipod_background_url: flowerWallpaper,
-                    font_family: "Unica One",
-                    font_color: "#000000",
-                    accent_color: "#2d72bc",
-                    ipod_color: "#e2e2e2",
-                    dark_mode: false,
-                    shuffle: false,
-                },
-                { onConflict: "id", ignoreDuplicates: true }
-            );
-        if (upsertError) {
-            console.error("Error upserting profile:", upsertError);
-            return;
-        }
-        const { data, error } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", userId)
-            .single();
-        if (error) {
-            console.error("Error fetching profile after upsert:", error);
-            return;
-        }
-        setCustomization({
-            appThemeColor: data.app_theme_color,
-            ipodBackground: data.ipod_background_url,
-            fontFamily: data.font_family,
-            fontColor: data.font_color,
-            accentColor: data.accent_color,
-            ipodColor: data.ipod_color,
-        });
-        setDarkMode(data.dark_mode);
-        setShuffle(data.shuffle);
-    };
 
     useEffect(() => {
         // function to run
@@ -124,27 +78,12 @@ function IPod({ customization, setCustomization, handleResetCustomization }) {
         setCurrentTime(0);
     }, [currentSong]);
 
-    useEffect(() => {
-        // fires when app loads and again when the user logs in or out
-        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-            setUser(session?.user ?? null);
-            if (session?.user) {
-                fetchOrCreateProfile(session.user.id);
-            }
-        });
-
-        // 
-        return () => {
-            authListener.subscription.unsubscribe();
-        };
-    }, []);
-
     return (
         <div className="ipod-container">
             <h1>PlayBack</h1>
             <div className="ipod" style={{ "--ipod-color": customization.ipodColor, "--font-color": customization.fontColor, "--accent-color": customization.accentColor, "--ipod-background": `url(${customization.ipodBackground})`, "--font-family": customization.fontFamily }}>
-                <Screen currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} menuItems={menuItems} songs={songs} setSongs={setSongs} currentSong={currentSong} setCurrentSong={setCurrentSong} currentTime={currentTime} playlists={playlists} setPlaylists={setPlaylists} selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedPlaylist={selectedPlaylist} setSelectedPlaylist={setSelectedPlaylist} previousScreen={previousScreen} setPreviousScreen={setPreviousScreen} user={user} customization={customization} setCustomization={setCustomization} shuffle={shuffle} setShuffle={setShuffle} handleResetCustomization={handleResetCustomization} fontOptions={fontOptions} darkMode={darkMode} setDarkMode={setDarkMode} />
-                <ClickWheel currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} menuItems={menuItems} songs={songs} currentSong={currentSong} setCurrentSong={setCurrentSong} isPlaying={isPlaying} setIsPlaying={setIsPlaying} skipSong={skipSong} selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedPlaylist={selectedPlaylist} setSelectedPlaylist={setSelectedPlaylist} playlists={playlists} previousScreen={previousScreen} setPreviousScreen={setPreviousScreen} user={user} shuffle={shuffle} setShuffle={setShuffle} handleResetCustomization={handleResetCustomization} fontOptions={fontOptions} customization={customization} setCustomization={setCustomization} />
+                <Screen currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} menuItems={menuItems} songs={songs} setSongs={setSongs} currentSong={currentSong} setCurrentSong={setCurrentSong} currentTime={currentTime} playlists={playlists} setPlaylists={setPlaylists} selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedPlaylist={selectedPlaylist} setSelectedPlaylist={setSelectedPlaylist} previousScreen={previousScreen} setPreviousScreen={setPreviousScreen} user={user} customization={customization} setCustomization={setCustomization} shuffle={shuffle} setShuffle={setShuffle} handleResetCustomization={handleResetCustomization} fontOptions={fontOptions} darkMode={darkMode} setDarkMode={setDarkMode} customizationItems={customizationItems} />
+                <ClickWheel currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} menuItems={menuItems} songs={songs} currentSong={currentSong} setCurrentSong={setCurrentSong} isPlaying={isPlaying} setIsPlaying={setIsPlaying} skipSong={skipSong} selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedPlaylist={selectedPlaylist} setSelectedPlaylist={setSelectedPlaylist} playlists={playlists} previousScreen={previousScreen} setPreviousScreen={setPreviousScreen} user={user} shuffle={shuffle} setShuffle={setShuffle} handleResetCustomization={handleResetCustomization} fontOptions={fontOptions} customization={customization} setCustomization={setCustomization} customizationItems={customizationItems} />
                 <audio ref={audioRef} src={currentSong?.fileUrl} onTimeUpdate={handleTimeUpdate} onEnded={() => skipSong(1, false)} />
             </div>
         </div>

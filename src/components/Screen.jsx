@@ -6,7 +6,7 @@ import Settings from "./Settings.jsx";
 import NowPlaying from "./NowPlaying.jsx";
 import Customization from "./Customization.jsx";
 
-function Screen({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu, menuItems, songs, setSongs, currentSong, setCurrentSong, currentTime, playlists, setPlaylists, selectedItem, setSelectedItem, selectedPlaylist, setSelectedPlaylist, previousScreen, setPreviousScreen, user, customization, setCustomization, shuffle, setShuffle, handleResetCustomization, fontOptions, darkMode, setDarkMode }) {
+function Screen({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu, menuItems, songs, setSongs, currentSong, setCurrentSong, currentTime, playlists, setPlaylists, selectedItem, setSelectedItem, selectedPlaylist, setSelectedPlaylist, previousScreen, setPreviousScreen, user, customization, setCustomization, shuffle, setShuffle, handleResetCustomization, fontOptions, darkMode, setDarkMode, customizationItems }) {
 
     const handleMenuClick = (item) => {
         setSelectedMenu(item);
@@ -58,7 +58,7 @@ function Screen({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu
                 }
 
                 {currentScreen === "Customization" && 
-                    <Customization darkMode={darkMode} setDarkMode={setDarkMode} user={user} selectedItem={selectedItem} customization={customization} setCustomization={setCustomization} fontOptions={fontOptions} />
+                    <Customization darkMode={darkMode} setDarkMode={setDarkMode} user={user} selectedItem={selectedItem} customization={customization} setCustomization={setCustomization} fontOptions={fontOptions} customizationItems={customizationItems} />
                 }
             </div>
         </div>
