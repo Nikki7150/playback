@@ -23,7 +23,7 @@ function SongList({ songs, setCurrentSong, setCurrentScreen, selectedItem, setSe
                     }}
                 >
                     {song.albumArt && <img src={song.albumArt} alt="Album Art" className="album-art" />}
-                    {song.title} - {song.artist}  
+                    <span className="song-title-text">{song.title} - {song.artist}</span>
                     {song.duration && <span className="song-duration">{Math.floor(song.duration / 60)}:{String(Math.floor(song.duration % 60)).padStart(2, '0')}</span>}
                 </li>
             ))}

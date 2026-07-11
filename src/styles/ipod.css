@@ -10,11 +10,13 @@
 /*------------------------------------------------- IPOD.JSX -------------------------------------------------*/
 .ipod-container {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   display: block;
   justify-content: center;
   align-items: center;
   position: relative;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 h1 {
@@ -25,8 +27,10 @@ h1 {
 }
 
 .ipod {
-  width: 520px;
-  height: 860px;
+  width: clamp(280px, 90vw, 520px);
+  height: clamp(460px, 155vw, 860px);
+  max-width: 100%;
+  aspect-ratio: 520 / 860;
   background: linear-gradient(160deg, color-mix(in srgb, var(--ipod-color) 80%, white) 0%, var(--ipod-color) 40%, color-mix(in srgb, var(--ipod-color) 75%, black) 100%);
   border-radius: 40px;
   box-shadow:
@@ -38,9 +42,9 @@ h1 {
     inset -2px -3px 8px color-mix(in srgb, var(--ipod-color) 65%, black),
     /* subtle inner rim all around */
     inset 0 0 20px color-mix(in srgb, var(--ipod-color) 65%, black);
-
   margin: 0 auto;
   overflow: hidden;
+  position: relative;
 }
 
 /*------------------------------------------------- SCREEN.JSX -------------------------------------------------*/
@@ -54,12 +58,9 @@ h1 {
   border: 3px solid #3d3f40;
   color: var(--font-color);
   border-radius: 10px;
-
   display: block;
-  margin: 36px;
-
+  margin: 7%;
   overflow: hidden;
-
   font-family: var(--font-family) !important;
   line-height: 1.2;
 }
@@ -239,13 +240,15 @@ h1 {
 .click-wheel:has(.backward-button:active) .glow-left { opacity: 1; }
 
 .click-wheel {
-  width: 322px;
-  height: 322px;
+  width: clamp(180px, 55%, 322px);
+  aspect-ratio: 1 / 1;
+  height: auto;
   background: #fafcfd;
   border-radius: 50%;
   position: relative;
   box-shadow:  0 0 3px rgba(0, 0, 0, 0.4);
-  margin: 70px auto;
+  margin: 20% auto;
+  touch-action: none;
 }
 
 .button {
@@ -307,8 +310,9 @@ h1 {
 }
 
 .center-button {
-  width: 120px;
-  height: 120px;
+  width: 38%;
+  aspect-ratio: 1 / 1;
+  height: auto;
   background: linear-gradient(180deg, color-mix(in srgb, var(--ipod-color) 75%, black) 0%, var(--ipod-color) 70%, color-mix(in srgb, var(--ipod-color) 75%, white) 100%);
   border-radius: 50%;
   box-shadow:  0 0 5px #cdcfce;
@@ -353,8 +357,8 @@ h1 {
 }
 
 .album-pic {
-  width: 190px;
-  height: 190px;
+  width: clamp(80px, 35vw, 190px);
+  height: clamp(80px, 35vw, 190px);
   margin-right: 10px;
   border: 1px solid #ccc;
 }
@@ -382,7 +386,9 @@ h1 {
 .progress-bar {
   width: 100%;
   height: 10px;
-  background-color: #e0e0e0;
+  min-height: 10px;
+  flex-shrink: 0;
+  background-color: #cccccc;
   border-radius: 5px;
   overflow: hidden;
   margin-bottom: 10px;
@@ -435,6 +441,22 @@ h1 {
   display: flex;
   align-items: center;
   padding: 5px;
+  overflow: hidden;
+}
+
+.song-item span,
+.song-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-title-text {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .song-item.active {
@@ -634,4 +656,37 @@ button {
 .song-list.dark .song-item {
   background-color: #696969;
   color: white;
+}
+
+/*----------------------------------------------- MEDIA RESPONSIVE -------------------------------------------------*/
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  .ipod {
+    width: 92vw;
+  }
+
+  .now-playing {
+    padding: 6px;
+  }
+
+  .song-info h4 {
+    font-size: 15px;
+    margin: 5px;
+  }
+
+  .song-info p {
+    font-size: 13px;
+    margin: 5px;
+  }
+
+  .song-details {
+    margin-bottom: 2%;
+  }
+
+  .progress-bar {
+    margin-bottom: 2%;
+  }
 }

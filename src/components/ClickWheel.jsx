@@ -24,26 +24,21 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
         return Math.atan2(dy, dx) * (180 / Math.PI); // Convert radians to degrees
     };
 
-    const handleMouseDown = (e) => {
+    const handlePointerDown = (e) => {
         isDragging.current = true;
         prevAngle.current = getAngle(e.clientX, e.clientY);
         accumulatedRotation.current = 0;
     };
 
-    const handleMouseMove = (e) => {
+    const handlePointerMove = (e) => {
         if (!isDragging.current) return;
-
         const currentAngle = getAngle(e.clientX, e.clientY);
         let difference = currentAngle - prevAngle.current;
-
         if (difference > 180) difference -= 360;
         else if (difference < -180) difference += 360;
-
         accumulatedRotation.current += difference;
         prevAngle.current = currentAngle;
-
         const threshold = 25; // degrees
-
         if (accumulatedRotation.current > threshold) {
             moveSelection(1); // Move selection down
             accumulatedRotation.current = 0;
@@ -53,7 +48,7 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
         }
     };
 
-    const handleMouseUp = () => {
+    const handlePointerUp = () => {
         isDragging.current = false;
     };
 
@@ -225,10 +220,10 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
         <div 
             className="click-wheel"
             ref={wheelRef}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerLeave={handlePointerUp}
         >
             <div className="glow-top"></div>
             <div className="glow-right"></div>
