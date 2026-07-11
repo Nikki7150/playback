@@ -35,7 +35,7 @@ function Library({ songs, setSongs, currentSong, setCurrentSong, setCurrentScree
             <button className={selectedItem === "Add Song" ? "add-song-button active" : "add-song-button"} onClick={() => document.querySelector('.song-input').click()}>
                 Add Song
             </button>
-            <input type="file" accept="audio/*" className="song-input" onChange={handleSongUpload} />
+            <input type="file" accept="audio/*,.mp3,.m4a,.wav" className="song-input" onChange={handleSongUpload} />
             <SongList 
                 songs={songs} 
                 setCurrentSong={setCurrentSong} 
