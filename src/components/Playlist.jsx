@@ -41,6 +41,39 @@ function Playlist({ playlists, setPlaylists, songs, setSongs, setCurrentSong, se
         setIsUploading(false);
     };
 
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    const handleMobilePlaylistUpload = async (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+        const playlistName = window.prompt("Name your playlist:");
+        if (!playlistName) return;
+        setIsUploading(true);
+        const newSongs = [];
+        const songIds = [];
+        for (const file of files) {
+            const newSong = await extractSongData(file);
+            if (user) {
+                const savedSong = await saveSongToSupabase(newSong, file, user.id);
+                if (savedSong) newSongs.push(savedSong);
+            } else {
+                newSongs.push(newSong);
+            }
+            songIds.push(newSong.id);
+        }
+        const newPlaylist = {
+            name: playlistName,
+            songIds: songIds,
+            id: crypto.randomUUID(),
+        };
+        if (user) {
+            await savePlaylistToSupabase(newPlaylist, user.id);
+        }
+        setSongs([...songs, ...newSongs]);
+        setPlaylists([...playlists, newPlaylist]);
+        setIsUploading(false);
+    };
+
     return (
         <div className={darkMode ? "playlist dark" : "playlist"}>
             <div className="loading" style={{ display: isUploading ? "block" : "none" }}>
@@ -50,7 +83,22 @@ function Playlist({ playlists, setPlaylists, songs, setSongs, setCurrentSong, se
                 <><button className={selectedItem === "Add Playlist" ? "add-playlist-button active" : "add-playlist-button"} onClick={() => document.querySelector('.playlist-input').click()}>
                     Add Playlist
                 </button>
-                <input type="file" webkitdirectory="" className="playlist-input" onChange={handlePlaylistUpload}/>
+                {isMobile ? (
+                    <input 
+                        type="file" 
+                        accept="audio/*,.mp3,.m4a,.wav" 
+                        multiple 
+                        className="playlist-input" 
+                        onChange={handleMobilePlaylistUpload} 
+                    />
+                ) : (
+                    <input 
+                        type="file" 
+                        webkitdirectory="" 
+                        className="playlist-input" 
+                        onChange={handlePlaylistUpload} 
+                    />
+                )}
                 <ul className={darkMode ? "playlist-list dark" : "playlist-list"}>
                         {playlists.map((playlist) => (
                             <li
