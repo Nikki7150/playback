@@ -40,4 +40,14 @@ This app has almost all the features an actual iPod would have. THey are listed 
 - Supabase - Postgres
 - Supabase auth - Google OAuth
 - jsmediatags
-- 
+
+## Limitations
+- No delete implemented for songs and playlists for now
+- No volume controls
+- App doesnt detect duplicate songs
+
+## Future plans
+- add delete feature
+- detect duplicate songs
+- add volume controls
+- add more customization options like stickers and charms
