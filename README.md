@@ -1,16 +1,43 @@
-# React + Vite
+# PlayBack - An iPod mp3 player
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
+Music is one of the biggest parts of my life. I listen to music when I do my chores, study, paint, and take my dog on a walk. I tend to buy a lot of CDs and download the songs onto my phone or computer to play when I have no internet. Recently, I also started listening to my songs directly from the downloaded form because of the countless ads Spotify and other music platforms play just when I start enjoying my songs and I got kinda sick of it. So I thought to myself, "I can code. Why not make a website that plays all my downloaded songs like a music player would? Nothing's stopping me." 
+And that's exactly what I did. 
+I brainstormed a lot and came up with the idea to make the website look like an iPod because I've been wanting one from a long time but never actually bought one. I was also learning React so I used whatever I knew to create a base and started learning more through tutorials and kept upgrading this app. By far, I think this is one of the best apps I have made and I'm really proud of it. 
+This app has almost all the features an actual iPod would have. THey are listed below. 
 
-Currently, two official plugins are available:
+## Features
+- Upload songs
+- Upload Playlists
+- Play songs from common library and separately in each playlist
+- Next Song
+- Previous Song
+- Move to different parts of the song - use the circle scroll wheel to rotate and move forward and backward in each song
+- Dark Mode toggle
+- Shuffle Songs toggle
+- Login using Google
+- Log out
+- App and Ipod customizations:
+    - App background (App Theme)
+    - Ipod Screen Background (Ipod Background)
+    - Font types - click on the menu to click through different fonts
+    - Font color
+    - Accent color
+    - iPod color
+- Reset Settings
+- Click on buttons on the screen to navigate (or)
+- Use the scroll wheel and move your finger around the circle to scroll through options
+- Use the top button on the clickwheel to go back to previous screen
+- You can use the app with or without logging in
+- If you dont login with an account, your playlist and songs will not persist and you will have to upload them every time you want to listen
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Technologies Used
+- React (.jsx)
+- Vite
+- HTML
+- CSS
+- JavaScript
+- Supabase - Postgres
+- Supabase auth - Google OAuth
+- jsmediatags
+- 
