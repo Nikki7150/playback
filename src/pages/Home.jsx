@@ -101,14 +101,6 @@ function Home() {
         saveProfile();
     }, [customization, darkMode, shuffle]);
 
-    const handleStickerUpload = (position, file) => {
-        const imageUrl = URL.createObjectURL(file);
-        const updatedStickers = customization.stickers.map(sticker =>
-            sticker.position === position ? { ...sticker, image: imageUrl } : sticker
-        );
-        setCustomization({ ...customization, stickers: updatedStickers });
-    };
-
     const handleResetCustomization = () => {
         setCustomization(defaultCustomization);
         console.log(customization.ipodBackground)

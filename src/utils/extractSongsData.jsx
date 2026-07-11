@@ -6,12 +6,9 @@ export function extractSongData(file) {
       onSuccess: (tag) => {
         const { title, artist, album, picture } = tag.tags;
 
-        let albumArt = null;
+        let albumArtBlob = null;
         if (picture) {
-          const base64String = picture.data
-            .map((byte) => String.fromCharCode(byte))
-            .join("");
-          albumArt = `data:${picture.format};base64,${btoa(base64String)}`;
+          albumArtBlob = new Blob([new Uint8Array(picture.data)], { type: picture.format });
         }
 
         const audio = new Audio(URL.createObjectURL(file));
@@ -22,7 +19,7 @@ export function extractSongData(file) {
             artist: artist || "Unknown Artist",
             album: album || "Unknown Album",
             duration: audio.duration,
-            albumArt,
+            albumArtBlob: albumArtBlob,
             fileUrl: URL.createObjectURL(file),
           });
         });

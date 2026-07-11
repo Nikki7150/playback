@@ -7,7 +7,7 @@ import { FiMenu } from 'react-icons/fi';
 import { FaFastForward } from 'react-icons/fa';
 import { FaFastBackward } from 'react-icons/fa';
 
-function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu, menuItems, songs, currentSong, setCurrentSong, isPlaying, setIsPlaying, skipSong, selectedItem, setSelectedItem, selectedPlaylist, setSelectedPlaylist, playlists, previousScreen, setPreviousScreen, user, shuffle, setShuffle, handleResetCustomization, fontOptions, customization, setCustomization, customizationItems }) {
+function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu, menuItems, songs, currentSong, setCurrentSong, isPlaying, setIsPlaying, skipSong, selectedItem, setSelectedItem, selectedPlaylist, setSelectedPlaylist, playlists, previousScreen, setPreviousScreen, user, shuffle, setShuffle, handleResetCustomization, fontOptions, customization, setCustomization, customizationItems, audioRef }) {
     // useRef doesnt rerender and gives final values - better than useState that rerenders
     const wheelRef = useRef(null);
     const isDragging = useRef(false);
@@ -61,20 +61,16 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
         if (currentScreen === "Menu") {
             const currentIndex = menuItems.indexOf(selectedMenu);
             let newIndex = currentIndex + direction;
-
             if (newIndex < 0) newIndex = menuItems.length - 1;
             if (newIndex >= menuItems.length) newIndex = 0;
-
             setSelectedMenu(menuItems[newIndex]);
         }
         if (currentScreen === "Library") {
             const libraryItems = ["Add Song", ...songs];
             const currentIndex = libraryItems.indexOf(selectedItem);
             let newIndex = currentIndex + direction;
-
             if (newIndex < 0) newIndex = libraryItems.length - 1;
             if (newIndex >= libraryItems.length) newIndex = 0;
-
             setSelectedItem(libraryItems[newIndex]);
         }
         if (currentScreen === "Playlists") {
@@ -82,53 +78,44 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
                 const playlistItems = ["Add Playlist", ...playlists];
                 const currentIndex = playlistItems.indexOf(selectedItem);
                 let newIndex = currentIndex + direction;
-
                 if (newIndex < 0) newIndex = playlistItems.length - 1;
                 if (newIndex >= playlistItems.length) newIndex = 0;
-
                 setSelectedItem(playlistItems[newIndex]);
             } else {
                 const playlistSongs = songs.filter((song) => selectedPlaylist.songIds.includes(song.id));
                 const currentIndex = playlistSongs.indexOf(selectedItem);
                 let newIndex = currentIndex + direction;
-
                 if (newIndex < 0) newIndex = playlistSongs.length - 1;
                 if (newIndex >= playlistSongs.length) newIndex = 0;
-
                 setSelectedItem(playlistSongs[newIndex]);
             }
         }
         if (currentScreen === "Settings") {
             if (user) {
                 const settingsItems = ["Dark Mode", "Shuffle", "Ipod Customization", "Reset Settings", "User Name", "Logout"];
-
                 const currentIndex = settingsItems.indexOf(selectedItem);
                 let newIndex = currentIndex + direction;
-
                 if (newIndex < 0) newIndex = settingsItems.length - 1;
                 if (newIndex >= settingsItems.length) newIndex = 0;
-
                 setSelectedItem(settingsItems[newIndex]);
             } else {
                 const settingsItems = ["Dark Mode", "Shuffle", "Ipod Customization", "Reset Settings", "Login with Google"];
-
                 const currentIndex = settingsItems.indexOf(selectedItem);
                 let newIndex = currentIndex + direction;
-
                 if (newIndex < 0) newIndex = settingsItems.length - 1;
                 if (newIndex >= settingsItems.length) newIndex = 0;
-
                 setSelectedItem(settingsItems[newIndex]);
             }
         }
         if (currentScreen === "Customization") {
             const currentIndex = customizationItems.indexOf(selectedItem);
             let newIndex = currentIndex + direction;
-
             if (newIndex < 0) newIndex = customizationItems.length - 1;
             if (newIndex >= customizationItems.length) newIndex = 0;
-
             setSelectedItem(customizationItems[newIndex]);
+        }
+        if (currentScreen === "Now Playing") {
+            seek(direction);
         }
     };
 
@@ -189,10 +176,8 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
             if (selectedItem === "Font Type") {
                 const currentIndex = fontOptions.indexOf(customization.fontFamily);
                 let newIndex = currentIndex + 1;
-
                 if (newIndex < 0) newIndex = fontOptions.length - 1;
                 if (newIndex >= fontOptions.length) newIndex = 0;
-
                 setCustomization({...customization, fontFamily: fontOptions[newIndex]})
             }
             if (selectedItem === "Font Color") {
@@ -228,6 +213,12 @@ function ClickWheel({ currentScreen, setCurrentScreen, selectedMenu, setSelected
         } else {
             setCurrentScreen("Menu");
         }
+    };
+
+    const seek = (direction) => {
+        if (!audioRef.current) return;
+        const seekAmount = 5; // seconds
+        audioRef.current.currentTime += direction * seekAmount;
     };
 
     return (

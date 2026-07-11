@@ -1,37 +1,51 @@
 import "../styles/ipod.css";
 import { FaAngleRight } from 'react-icons/fa';
 import { extractSongData } from "../utils/extractSongsData.jsx";
+import { saveSongToSupabase } from "../utils/saveToSupabase.jsx";
+import { savePlaylistToSupabase } from "../utils/saveToSupabase.jsx";
 import { useState } from "react";
 import SongList from "./SongList.jsx";
 
 function Playlist({ playlists, setPlaylists, songs, setSongs, setCurrentSong, setCurrentScreen, selectedItem, setSelectedItem, selectedPlaylist, setSelectedPlaylist, setPreviousScreen, currentScreen, user, darkMode }) {
-    const handlePlaylistUpload = async (e) => {
-        const files = Array.from(e.target.files); // Convert FileList to an array
-        if (files.length === 0) return;
+    const [isUploading, setIsUploading] = useState(false);
 
+    const handlePlaylistUpload = async (e) => {
+        const files = Array.from(e.target.files); 
+        if (files.length === 0) return;
+        setIsUploading(true);
         const newSongs = [];
         const songIds = [];
-
         for (const file of files) {
-            const newSong = await extractSongData(file); // let each song be extracted and added to the newSongs array
-            newSongs.push(newSong);
+            const newSong = await extractSongData(file);
+            if (user) {
+                const savedSong = await saveSongToSupabase(newSong, file, user.id);
+                if (savedSong) {
+                    newSongs.push(savedSong);
+                }
+            } else {
+                newSongs.push(newSong);
+            }
             songIds.push(newSong.id);
         }
-
         const folderName = files[0].webkitRelativePath.split('/')[0];
-
         const newPlaylist = {
             name: folderName,
             songIds: songIds,
             id: crypto.randomUUID(),
         };
-
+        if (user) {
+            await savePlaylistToSupabase(newPlaylist, user.id);
+        }
         setSongs([...songs, ...newSongs]);
         setPlaylists([...playlists, newPlaylist]);
+        setIsUploading(false);
     };
 
     return (
         <div className={darkMode ? "playlist dark" : "playlist"}>
+            <div className="loading" style={{ display: isUploading ? "block" : "none" }}>
+                Uploading...
+            </div>
             {selectedPlaylist === null && (
                 <><button className={selectedItem === "Add Playlist" ? "add-playlist-button active" : "add-playlist-button"} onClick={() => document.querySelector('.playlist-input').click()}>
                     Add Playlist

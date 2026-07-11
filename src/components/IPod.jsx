@@ -64,6 +64,54 @@ function IPod({ customization, setCustomization, handleResetCustomization, shuff
 
     const fontOptions = ["Unica One", "Indie Flower", "Handjet", "Sue Ellen Fransico", "Oxanium"];
 
+    const fetchSongs = async (userId) => {
+        if (!userId) return;
+        const { data, error } = await supabase
+            .from("songs")
+            .select("*")
+            .eq("user_id", userId);
+        if (error) {
+            console.error("Error fetching songs:", error);
+            return;
+        }
+        const formattedSongs = data.map((row) => ({
+            id: row.id,
+            title: row.title,
+            artist: row.artist,
+            album: row.album,
+            duration: row.duration,
+            fileUrl: row.file_url,
+            albumArt: row.album_art_url,
+        }));
+        setSongs(formattedSongs);
+    };
+
+    const fetchPlaylists = async (userId) => {
+        if (!userId) return;
+        const { data, error } = await supabase
+            .from("playlists")
+            .select("*")
+            .eq("user_id", userId);
+        if (error) {
+            console.error("Error fetching playlists:", error);
+            return;
+        }
+        // for each playlist, fetch its song ids form playlist_songs
+        const playlistsWithSongs = await Promise.all(data.map(async (playlist) => {
+            const { data: playlistSongs, error: playlistSongsError } = await supabase
+                .from("playlist_songs")
+                .select("song_id")
+                .eq("playlist_id", playlist.id);
+            if (playlistSongsError) {
+                console.error("Error fetching playlist songs:", playlistSongsError);
+                return { ...playlist, songIds: [] };
+            }
+            const songIds = playlistSongs.map((entry) => entry.song_id);
+            return { ...playlist, songIds };
+        }));
+        setPlaylists(playlistsWithSongs);
+    };
+
     useEffect(() => {
         // function to run
         if (isPlaying) {
@@ -78,12 +126,19 @@ function IPod({ customization, setCustomization, handleResetCustomization, shuff
         setCurrentTime(0);
     }, [currentSong]);
 
+    useEffect(() => {
+        if (user) {
+            fetchSongs(user.id);
+            fetchPlaylists(user.id);
+        }
+    }, [user]);
+
     return (
         <div className="ipod-container">
             <h1>PlayBack</h1>
             <div className="ipod" style={{ "--ipod-color": customization.ipodColor, "--font-color": customization.fontColor, "--accent-color": customization.accentColor, "--ipod-background": `url(${customization.ipodBackground})`, "--font-family": customization.fontFamily }}>
                 <Screen currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} menuItems={menuItems} songs={songs} setSongs={setSongs} currentSong={currentSong} setCurrentSong={setCurrentSong} currentTime={currentTime} playlists={playlists} setPlaylists={setPlaylists} selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedPlaylist={selectedPlaylist} setSelectedPlaylist={setSelectedPlaylist} previousScreen={previousScreen} setPreviousScreen={setPreviousScreen} user={user} customization={customization} setCustomization={setCustomization} shuffle={shuffle} setShuffle={setShuffle} handleResetCustomization={handleResetCustomization} fontOptions={fontOptions} darkMode={darkMode} setDarkMode={setDarkMode} customizationItems={customizationItems} />
-                <ClickWheel currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} menuItems={menuItems} songs={songs} currentSong={currentSong} setCurrentSong={setCurrentSong} isPlaying={isPlaying} setIsPlaying={setIsPlaying} skipSong={skipSong} selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedPlaylist={selectedPlaylist} setSelectedPlaylist={setSelectedPlaylist} playlists={playlists} previousScreen={previousScreen} setPreviousScreen={setPreviousScreen} user={user} shuffle={shuffle} setShuffle={setShuffle} handleResetCustomization={handleResetCustomization} fontOptions={fontOptions} customization={customization} setCustomization={setCustomization} customizationItems={customizationItems} />
+                <ClickWheel currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} menuItems={menuItems} songs={songs} currentSong={currentSong} setCurrentSong={setCurrentSong} isPlaying={isPlaying} setIsPlaying={setIsPlaying} skipSong={skipSong} selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedPlaylist={selectedPlaylist} setSelectedPlaylist={setSelectedPlaylist} playlists={playlists} previousScreen={previousScreen} setPreviousScreen={setPreviousScreen} user={user} shuffle={shuffle} setShuffle={setShuffle} handleResetCustomization={handleResetCustomization} fontOptions={fontOptions} customization={customization} setCustomization={setCustomization} customizationItems={customizationItems} audioRef={audioRef} />
                 <audio ref={audioRef} src={currentSong?.fileUrl} onTimeUpdate={handleTimeUpdate} onEnded={() => skipSong(1, false)} />
             </div>
         </div>

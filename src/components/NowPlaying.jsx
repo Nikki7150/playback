@@ -1,15 +1,23 @@
 import "../styles/ipod.css";
 
-function NowPlaying({ currentSong, setCurrentSong, songs, currentTime }) {
-    const trackNumber = songs.indexOf(currentSong) + 1;
-    const totalTracks = songs.length;
+function NowPlaying({ currentSong, setCurrentSong, songs, currentTime, playlists, selectedPlaylist, previousScreen }) {
+    let trackNumber = 0;
+    let totalTracks = 0;
+
+    if (previousScreen === "Playlists" && selectedPlaylist) {
+        const playlistSongs = songs.filter((song) => selectedPlaylist.songIds.includes(song.id));
+        trackNumber = playlistSongs.indexOf(currentSong) + 1;
+        totalTracks = playlistSongs.length;
+    } else if (previousScreen === "Library") {
+        trackNumber = songs.indexOf(currentSong) + 1;
+        totalTracks = songs.length;
+    }
 
     const ellapsedTime = currentTime;
     const totalTime = currentSong?.duration || 0;
     const progress = totalTime > 0 ? (ellapsedTime / totalTime) * 100 : 0;
 
     return (
-
         <div className="now-playing">
             <div className="track-number">{trackNumber} of {totalTracks}</div>
             <div className="song-details">

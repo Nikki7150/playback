@@ -50,7 +50,7 @@ function Screen({ currentScreen, setCurrentScreen, selectedMenu, setSelectedMenu
                 }
 
                 {currentScreen === "Now Playing" && 
-                    <NowPlaying currentSong={currentSong} setCurrentSong={setCurrentSong} songs={songs} currentTime={currentTime} />
+                    <NowPlaying currentSong={currentSong} setCurrentSong={setCurrentSong} songs={songs} currentTime={currentTime} playlists={playlists} selectedPlaylist={selectedPlaylist} previousScreen={previousScreen} />
                 }
 
                 {currentScreen === "Settings" && 
