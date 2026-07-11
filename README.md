@@ -8,7 +8,10 @@ This app has almost all the features an actual iPod would have. THey are listed 
 
 ## Features
 - Upload songs
+    - upload single songs in Library tab
 - Upload Playlists
+    - if on a computer, you can upload a playlist as an entire file with the playlist name as the file name
+    - if on a phone, you can choose multiple songs to upload into a playlist and will be prompted with a text box to enter plaaylist name
 - Play songs from common library and separately in each playlist
 - Next Song
 - Previous Song
